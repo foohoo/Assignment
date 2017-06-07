@@ -1,0 +1,10 @@
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\Trains.Tests.dll
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\Trains.Tests.pdb
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\nunit.framework.dll
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\nunit.framework.xml
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Trains.Tests.csprojResolveAssemblyReference.cache
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Trains.Tests.dll
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Trains.Tests.pdb
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\Trains.exe
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\Trains.pdb
+C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\TestInput.txt
