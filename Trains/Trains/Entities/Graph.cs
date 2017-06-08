@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Trains.Entities
 {
@@ -9,16 +11,21 @@ namespace Trains.Entities
 
         public List<Node> Nodes { get; set; }
 
-        public Graph(string[] inputNodes)
-        {
+        public Graph(string inputGraphString)
+        {         
             NodeMap = new Dictionary<char, Node>();
             Nodes = new List<Node>();
 
-            foreach(var node in inputNodes)
+            var inputNodes = inputGraphString.Split(new[] {", "}, StringSplitOptions.None);
+
+            foreach (var node in inputNodes)
             {
                 var fromTown = node[0];
                 var toTown = node[1];
-                var distance = int.Parse(node.Substring(2));
+                int distance;
+                var containsDistance = int.TryParse(node.Substring(2), out distance);
+
+                if(!containsDistance) throw new ArgumentException("One of the nodes is not formatted correctly, correct format example: 'AB1'");
 
                 //Add new "from" node if needed
                 //Add new "to" node if needed
@@ -38,6 +45,28 @@ namespace Trains.Entities
             NodeMap[town] = node;
 
             return node;
+        }
+
+        public int FindDistanceForJourney(char[] journey)
+        {
+            var totalDistance = 0;
+
+            var currentTown = NodeMap.ContainsKey(journey[0]) ? NodeMap[journey[0]] : null;
+
+            if (currentTown == null) return -1;
+
+            for (var i = 1; i < journey.Length; i++)
+            {
+                var destinationTown = journey[i];
+                var outGoingEdge = currentTown.OutgoingEdges.FirstOrDefault(e => e.Destination.Name == destinationTown);
+
+                if (outGoingEdge == null) return -1;
+
+                totalDistance += outGoingEdge.Distance;
+                currentTown = NodeMap[destinationTown];
+            }
+
+            return totalDistance;
         }
     }
 }

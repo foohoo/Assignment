@@ -8,9 +8,7 @@ namespace Trains.Services
     {
         public Graph CreateGraph(string inputGraphText)
         {
-            var nodeArray = inputGraphText.Split(new []{", "}, StringSplitOptions.None);
-
-            var graph = new Graph(nodeArray);
+            var graph = new Graph(inputGraphText);
 
             return graph;
         }

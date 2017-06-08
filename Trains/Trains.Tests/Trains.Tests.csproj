@@ -44,7 +44,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphServiceUnitTests.cs" />
+    <Compile Include="GraphUnitTests.cs" />
     <Compile Include="MainProgramUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
