@@ -104,5 +104,26 @@ namespace Trains.Tests
         }
 
         #endregion
+
+        #region Find_Journeys_With_Max_Limit
+
+        [Test]
+        public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_Below_A_Max_Stop_Amount()
+        {
+            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+
+            var graph = new Graph(inputGraphText);
+
+            var startingTown = 'C';
+            var finishingTown = 'C';
+            var maxStops = 3;
+
+            var numberOfJourneys = graph.FindJourneysWithMaxStopsFor(startingTown, finishingTown, maxStops);
+
+            Assert.That(numberOfJourneys, Is.EqualTo(2));
+        }
+
+        #endregion
+
     }
 }

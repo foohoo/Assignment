@@ -68,5 +68,39 @@ namespace Trains.Entities
 
             return totalDistance;
         }
+
+        public int FindJourneysWithMaxStopsFor(char startingTown, char finishingTown, int maxStops)
+        {
+            var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
+            var finishingNode = NodeMap.ContainsKey(finishingTown) ? NodeMap[finishingTown] : null;
+
+            if (startingNode == null || finishingNode == null) return -1;
+
+            var numberOfJourneysFound = 0;
+            var numberOfStops = 0;
+
+            numberOfJourneysFound = TravelEdges(startingNode, finishingTown, maxStops, numberOfStops, 0);
+
+            return numberOfJourneys;
+        }
+
+        private int TravelEdges(Node town, char destination, int maxStops, int numberOfStops, int numberOfJourneysFound)
+        {
+            numberOfStops++;
+
+            if (numberOfStops > maxStops)
+            {
+                return;
+            }
+
+            foreach (var edge in town.OutgoingEdges)
+            {
+                if (edge.Destination.Name == destination)
+                    return true;
+
+                var nextNode = edge.Destination;
+
+            }
+        }
     }
 }
