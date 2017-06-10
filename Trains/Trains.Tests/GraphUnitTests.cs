@@ -107,20 +107,36 @@ namespace Trains.Tests
 
         #region Find_Journeys_With_Max_Limit
 
-        [Test]
-        public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_Below_A_Max_Stop_Amount()
+        [TestCase('C', 'C', 3, 2)]
+        [TestCase('C', 'C', 2, 1)]
+        [TestCase('C', 'B', 3, 2)]
+        [TestCase('A', 'C', 4, 4)]
+        [TestCase('A', 'C', 3, 3)]
+        [TestCase('B', 'B', 2, 0)] //   |
+        [TestCase('B', 'B', 3, 1)] //   | These ones will continue to increase with 'MaxStops' due to the 
+        [TestCase('B', 'B', 4, 2)] //   | loop between C and D nodes in test data
+        [TestCase('B', 'B', 5, 3)] //   |
+        public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_Below_A_Max_Stop_Amount(char start, char finish, int maxStops, int expectedNoJourneys)
         {
             var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
 
             var graph = new Graph(inputGraphText);
 
-            var startingTown = 'C';
-            var finishingTown = 'C';
-            var maxStops = 3;
+            var numberOfJourneys = graph.FindJourneysWithMaxStopsFor(start, finish, maxStops);
 
-            var numberOfJourneys = graph.FindJourneysWithMaxStopsFor(startingTown, finishingTown, maxStops);
+            Assert.That(numberOfJourneys, Is.EqualTo(expectedNoJourneys));
+        }
 
-            Assert.That(numberOfJourneys, Is.EqualTo(2));
+        [TestCase('A', 'C', 4, 3)]
+        public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_With_Exact_Stops(char start, char finish, int stops, int expectedNoJourneys)
+        {
+            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+
+            var graph = new Graph(inputGraphText);
+
+            var numberOfJourneys = graph.FindJourneysWithExactStopsFor(start, finish, stops);
+
+            Assert.That(numberOfJourneys, Is.EqualTo(expectedNoJourneys));
         }
 
         #endregion

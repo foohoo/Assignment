@@ -76,31 +76,46 @@ namespace Trains.Entities
 
             if (startingNode == null || finishingNode == null) return -1;
 
-            var numberOfJourneysFound = 0;
             var numberOfStops = 0;
 
-            numberOfJourneysFound = TravelEdges(startingNode, finishingTown, maxStops, numberOfStops, 0);
-
-            return numberOfJourneys;
+            return startingNode.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, finishingTown, maxStops, numberOfStops, false));
         }
 
-        private int TravelEdges(Node town, char destination, int maxStops, int numberOfStops, int numberOfJourneysFound)
+
+        public int FindJourneysWithExactStopsFor(char startingTown, char finishingTown, int stops)
+        {
+            var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
+            var finishingNode = NodeMap.ContainsKey(finishingTown) ? NodeMap[finishingTown] : null;
+
+            if (startingNode == null || finishingNode == null) return -1;
+
+            var numberOfStops = 0;
+
+            return startingNode.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, finishingTown, stops, numberOfStops, true));
+        }
+
+
+        private int TravelEdges(Node town, char destination, int maxStops, int numberOfStops, bool needExactStops)
         {
             numberOfStops++;
 
             if (numberOfStops > maxStops)
+                return 0;
+
+            if (needExactStops)
             {
-                return;
+                if (town.Name == destination && numberOfStops == maxStops)
+                    return 1;
+            }
+            else
+            {
+                if (town.Name == destination)
+                    return 1;
             }
 
-            foreach (var edge in town.OutgoingEdges)
-            {
-                if (edge.Destination.Name == destination)
-                    return true;
-
-                var nextNode = edge.Destination;
-
-            }
+            return town.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, destination, maxStops, numberOfStops, needExactStops));
         }
+
+        
     }
 }
