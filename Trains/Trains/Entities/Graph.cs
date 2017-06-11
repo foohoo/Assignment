@@ -12,7 +12,7 @@ namespace Trains.Entities
         public List<Node> Nodes { get; set; }
 
         public Graph(string inputGraphString)
-        {         
+        {
             NodeMap = new Dictionary<char, Node>();
             Nodes = new List<Node>();
 
@@ -25,7 +25,9 @@ namespace Trains.Entities
                 int distance;
                 var containsDistance = int.TryParse(node.Substring(2), out distance);
 
-                if(!containsDistance) throw new ArgumentException("One of the nodes is not formatted correctly, correct format example: 'AB1'");
+                if (!containsDistance)
+                    throw new ArgumentException(
+                        "One of the nodes is not formatted correctly, correct format example: 'AB1'");
 
                 //Add new "from" node if needed
                 //Add new "to" node if needed
@@ -78,7 +80,8 @@ namespace Trains.Entities
 
             var numberOfStops = 0;
 
-            return startingNode.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, finishingTown, maxStops, numberOfStops, false));
+            return startingNode.OutgoingEdges.Sum(
+                edge => TravelEdgesForStops(edge.Destination, finishingTown, maxStops, numberOfStops, false));
         }
 
 
@@ -91,11 +94,30 @@ namespace Trains.Entities
 
             var numberOfStops = 0;
 
-            return startingNode.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, finishingTown, stops, numberOfStops, true));
+            return startingNode.OutgoingEdges.Sum(
+                edge => TravelEdgesForStops(edge.Destination, finishingTown, stops, numberOfStops, true));
+        }
+
+        public int FindNumberOfRoutesForJourneyWithMaxDistance(char startingTown, char finishingTown, int maxDistance)
+        {
+            var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
+            var finishingNode = NodeMap.ContainsKey(finishingTown) ? NodeMap[finishingTown] : null;
+
+            if (startingNode == null || finishingNode == null) return -1;
+
+            var numberOfRoutes = 0;
+
+            foreach (var edge in startingNode.OutgoingEdges)
+            {
+                numberOfRoutes = TravelEdgesForDistance(edge.Destination, finishingTown,maxDistance, 0, edge.Distance, numberOfRoutes);
+            }
+
+            return numberOfRoutes;
         }
 
 
-        private int TravelEdges(Node town, char destination, int maxStops, int numberOfStops, bool needExactStops)
+        private int TravelEdgesForStops(Node town, char destination, int maxStops, int numberOfStops,
+            bool needExactStops)
         {
             numberOfStops++;
 
@@ -113,9 +135,35 @@ namespace Trains.Entities
                     return 1;
             }
 
-            return town.OutgoingEdges.Sum(edge => TravelEdges(edge.Destination, destination, maxStops, numberOfStops, needExactStops));
+            return town.OutgoingEdges.Sum(edge => TravelEdgesForStops(edge.Destination, destination, maxStops,
+                numberOfStops, needExactStops));
         }
 
-        
+        private int TravelEdgesForDistance(Node town, char destination, int maxDistance, int distanceTravelled, int distance, int numberOfRoutes)
+        {
+            distanceTravelled += distance;
+
+            if (distanceTravelled >= maxDistance)
+                return numberOfRoutes;
+
+            if (town.Name == destination)
+                numberOfRoutes++;
+
+            foreach (var edge in town.OutgoingEdges)
+            {
+                numberOfRoutes = TravelEdgesForDistance(edge.Destination, destination, maxDistance,distanceTravelled, edge.Distance, numberOfRoutes);
+            }
+
+            return numberOfRoutes;
+        }
+
+
+        public enum CheckType
+        {
+            MaxStops = 0,
+            ExactStops = 1,
+            MaxDistance = 3
+
+        }
     }
 }

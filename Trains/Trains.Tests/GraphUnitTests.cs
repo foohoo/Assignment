@@ -127,7 +127,12 @@ namespace Trains.Tests
             Assert.That(numberOfJourneys, Is.EqualTo(expectedNoJourneys));
         }
 
+        #endregion
+
+        #region Find_Journeys_With_Exact_Stops
+
         [TestCase('A', 'C', 4, 3)]
+        [TestCase('A', 'E', 2, 1)]
         public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_With_Exact_Stops(char start, char finish, int stops, int expectedNoJourneys)
         {
             var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
@@ -135,6 +140,22 @@ namespace Trains.Tests
             var graph = new Graph(inputGraphText);
 
             var numberOfJourneys = graph.FindJourneysWithExactStopsFor(start, finish, stops);
+
+            Assert.That(numberOfJourneys, Is.EqualTo(expectedNoJourneys));
+        }
+
+        #endregion
+
+        #region Find_Number_Of_Journeys_For_Max_Distance
+
+        [TestCase('C', 'C', 30, 7)]
+        public void Should_Find_Number_Of_Journeys_From_Start_To_Destination_Below_Given_Distance(char start, char finish, int maxDistance, int expectedNoJourneys)
+        {
+            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+
+            var graph = new Graph(inputGraphText);
+
+            var numberOfJourneys = graph.FindNumberOfRoutesForJourneyWithMaxDistance(start, finish, maxDistance);
 
             Assert.That(numberOfJourneys, Is.EqualTo(expectedNoJourneys));
         }
