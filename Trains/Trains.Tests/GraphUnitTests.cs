@@ -162,5 +162,22 @@ namespace Trains.Tests
 
         #endregion
 
+        #region Find_Shortest_Distance
+
+        [TestCase('A', 'C', 9)]
+        [TestCase('B', 'B', 9)]
+        public void Should_Return_Shortest_Distance_Between_Start_And_Finish_Nodes(char start, char finish, int expectedDistance)
+        {
+            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+
+            var graph = new Graph(inputGraphText);
+
+            var shortestDistance = graph.FindShortestDistanceBetween(start, finish);
+
+            Assert.That(shortestDistance, Is.EqualTo(expectedDistance));
+        } 
+
+        #endregion
+
     }
 }

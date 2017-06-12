@@ -16,7 +16,7 @@ namespace Trains.Entities
             NodeMap = new Dictionary<char, Node>();
             Nodes = new List<Node>();
 
-            var inputNodes = inputGraphString.Split(new[] {", "}, StringSplitOptions.None);
+            var inputNodes = inputGraphString.Split(new[] { ", " }, StringSplitOptions.None);
 
             foreach (var node in inputNodes)
             {
@@ -40,14 +40,7 @@ namespace Trains.Entities
             }
         }
 
-        private Node AddNewNodeToGraphAndMap(char town)
-        {
-            var node = new Node(town);
-            Nodes.Add(node);
-            NodeMap[town] = node;
 
-            return node;
-        }
 
         public int FindDistanceForJourney(char[] journey)
         {
@@ -84,7 +77,6 @@ namespace Trains.Entities
                 edge => TravelEdgesForStops(edge.Destination, finishingTown, maxStops, numberOfStops, false));
         }
 
-
         public int FindJourneysWithExactStopsFor(char startingTown, char finishingTown, int stops)
         {
             var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
@@ -109,15 +101,82 @@ namespace Trains.Entities
 
             foreach (var edge in startingNode.OutgoingEdges)
             {
-                numberOfRoutes = TravelEdgesForDistance(edge.Destination, finishingTown,maxDistance, 0, edge.Distance, numberOfRoutes);
+                numberOfRoutes = TravelEdgesForDistance(edge.Destination, finishingTown, maxDistance, 0, edge.Distance, numberOfRoutes);
             }
 
             return numberOfRoutes;
         }
 
 
-        private int TravelEdgesForStops(Node town, char destination, int maxStops, int numberOfStops,
-            bool needExactStops)
+        private int MinDistance(List<Node> vertices, Dictionary<char, int> distance)
+        {
+            var min = int.MaxValue;
+            var minIndex = 0;
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                if (distance[vertices[i].Name] < min)
+                {
+                    min = distance[vertices[i].Name];
+                    minIndex = i;
+                }
+            }
+
+            return minIndex;
+        }
+
+        public int FindShortestDistanceBetween(char start, char finish)
+        {
+            var results = Dijkstra(start);
+
+            return results[finish];
+        }
+
+        private Dictionary<char, int> Dijkstra(char start)
+        {
+            var q = new List<Node>();
+
+           var distance = new Dictionary<char, int>();
+
+            for (var i = 0; i < Nodes.Count; i++)
+            {
+                var initialDistance = Nodes[i].Name == start ? 0 : int.MaxValue;
+                distance[Nodes[i].Name] = initialDistance;
+                q.Add(Nodes[i]);
+            }
+
+            while (q.Count > 0)
+            {
+                var minDistanceIndex = MinDistance(q, distance);
+                var u = q[minDistanceIndex];
+                q.Remove(u);
+
+                foreach (var node in u.OutgoingEdges)
+                {
+                    if (q.Contains(node.Destination))
+                    {
+                        int currDistance = distance[u.Name] + node.Distance;
+
+                        if (currDistance < distance[node.Destination.Name])
+                        {
+                            distance[node.Destination.Name] = currDistance;                        }
+                    }
+                }
+            }
+
+            return distance;
+        }
+
+        private Node AddNewNodeToGraphAndMap(char town)
+        {
+            var node = new Node(town);
+            Nodes.Add(node);
+            NodeMap[town] = node;
+
+            return node;
+        }
+
+        private int TravelEdgesForStops(Node town, char destination, int maxStops, int numberOfStops, bool needExactStops)
         {
             numberOfStops++;
 
@@ -151,19 +210,22 @@ namespace Trains.Entities
 
             foreach (var edge in town.OutgoingEdges)
             {
-                numberOfRoutes = TravelEdgesForDistance(edge.Destination, destination, maxDistance,distanceTravelled, edge.Distance, numberOfRoutes);
+                numberOfRoutes = TravelEdgesForDistance(edge.Destination, destination, maxDistance, distanceTravelled, edge.Distance, numberOfRoutes);
             }
 
             return numberOfRoutes;
         }
+    }
 
+    public class Vertex
+    {
+        public int Distance { get; set; }
+        public Vertex PreviousNode { get; set; }
 
-        public enum CheckType
+        public Vertex(int distance, Vertex previousNode)
         {
-            MaxStops = 0,
-            ExactStops = 1,
-            MaxDistance = 3
-
+            Distance = distance;
+            PreviousNode = previousNode;
         }
     }
 }
