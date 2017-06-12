@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Trains.Entities
 {
@@ -113,9 +114,9 @@ namespace Trains.Entities
             var min = int.MaxValue;
             var minIndex = 0;
 
-            for (int i = 0; i < vertices.Count; i++)
+            for (int i = 0; i < vertices.Count(); i++)
             {
-                if (distance[vertices[i].Name] < min)
+                if (distance[vertices[i].Name] < min && !vertices[i].Visited)
                 {
                     min = distance[vertices[i].Name];
                     minIndex = i;
@@ -127,12 +128,12 @@ namespace Trains.Entities
 
         public int FindShortestDistanceBetween(char start, char finish)
         {
-            var results = Dijkstra(start);
+            var results = Dijkstra(start, finish);
 
             return results[finish];
         }
 
-        private Dictionary<char, int> Dijkstra(char start)
+        private Dictionary<char, int> Dijkstra(char start, char finish)
         {
             var q = new List<Node>();
 
@@ -147,23 +148,25 @@ namespace Trains.Entities
                 q.Add(Nodes[i]);
             }
 
-            while (q.Count > 0)
+            while (q.Count(n => !n.Visited) > 0)
             {
+
                 var minDistanceIndex = MinDistance(q, distance);
                 var u = q[minDistanceIndex];
-                q.Remove(u);
+
+                if (u.Name == finish && u.Visited)
+                    return distance;
+
+                u.Visited = true;
 
                 foreach (var node in u.OutgoingEdges)
                 {
-                    if (q.Contains(node.Destination))
-                    {
-                        int currDistance = distance[u.Name] + node.Distance;
+                    int currDistance = distance[u.Name] + node.Distance;
 
-                        if (currDistance < distance[node.Destination.Name])
-                        {
-                            distance[node.Destination.Name] = currDistance;
-                            //previousNode[node.Destination] = u;
-                        }
+                    if (currDistance > 0 && (currDistance < distance[node.Destination.Name] || distance[node.Destination.Name] == 0))
+                    {
+                        distance[node.Destination.Name] = currDistance;
+                        //previousNode[node.Destination] = u;
                     }
                 }
             }

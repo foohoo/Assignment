@@ -166,6 +166,10 @@ namespace Trains.Tests
 
         [TestCase('A', 'C', 9)]
         [TestCase('B', 'B', 9)]
+        [TestCase('C', 'C', 9)]
+        [TestCase('A', 'A', 0)]
+        [TestCase('D', 'A', int.MaxValue)]
+        [TestCase('A', 'B', 5)]
         public void Should_Return_Shortest_Distance_Between_Start_And_Finish_Nodes(char start, char finish, int expectedDistance)
         {
             var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
