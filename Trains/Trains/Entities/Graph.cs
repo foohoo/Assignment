@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
+using Trains.Helpers;
 
 namespace Trains.Entities
 {
@@ -26,13 +25,7 @@ namespace Trains.Entities
                 int distance;
                 var containsDistance = int.TryParse(node.Substring(2), out distance);
 
-                if (!containsDistance)
-                    throw new ArgumentException(
-                        "One of the nodes is not formatted correctly, correct format example: 'AB1'");
-
-                //Add new "from" node if needed
-                //Add new "to" node if needed
-                //create edge from "from" node to "to" node with correct distance
+                if (!containsDistance) throw new ArgumentException("One of the nodes is not formatted correctly, correct format example: 'AB1' seperated by commas and a space e.g. ', '");
 
                 var fromNode = NodeMap.ContainsKey(fromTown) ? NodeMap[fromTown] : AddNewNodeToGraphAndMap(fromTown);
                 var toNode = NodeMap.ContainsKey(toTown) ? NodeMap[toTown] : AddNewNodeToGraphAndMap(toTown);
@@ -40,8 +33,6 @@ namespace Trains.Entities
                 fromNode.AddDestination(toNode, distance);
             }
         }
-
-
 
         public int FindDistanceForJourney(char[] journey)
         {
@@ -65,30 +56,30 @@ namespace Trains.Entities
             return totalDistance;
         }
 
-        public int FindJourneysWithMaxStopsFor(char startingTown, char finishingTown, int maxStops)
+        public int FindJourneysWithMaxStopsFor(char start, char finish, int maxStops)
         {
-            var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
-            var finishingNode = NodeMap.ContainsKey(finishingTown) ? NodeMap[finishingTown] : null;
+            var startingNode = NodeMap.ContainsKey(start) ? NodeMap[start] : null;
+            var finishingNode = NodeMap.ContainsKey(finish) ? NodeMap[finish] : null;
 
             if (startingNode == null || finishingNode == null) return -1;
 
             var numberOfStops = 0;
 
             return startingNode.OutgoingEdges.Sum(
-                edge => TravelEdgesForStops(edge.Destination, finishingTown, maxStops, numberOfStops, false));
+                edge => TravelEdgesForStops(edge.Destination, finish, maxStops, numberOfStops, false));
         }
 
-        public int FindJourneysWithExactStopsFor(char startingTown, char finishingTown, int stops)
+        public int FindJourneysWithExactStopsFor(char start, char finish, int stops)
         {
-            var startingNode = NodeMap.ContainsKey(startingTown) ? NodeMap[startingTown] : null;
-            var finishingNode = NodeMap.ContainsKey(finishingTown) ? NodeMap[finishingTown] : null;
+            var startingNode = NodeMap.ContainsKey(start) ? NodeMap[start] : null;
+            var finishingNode = NodeMap.ContainsKey(finish) ? NodeMap[finish] : null;
 
             if (startingNode == null || finishingNode == null) return -1;
 
             var numberOfStops = 0;
 
             return startingNode.OutgoingEdges.Sum(
-                edge => TravelEdgesForStops(edge.Destination, finishingTown, stops, numberOfStops, true));
+                edge => TravelEdgesForStops(edge.Destination, finish, stops, numberOfStops, true));
         }
 
         public int FindNumberOfRoutesForJourneyWithMaxDistance(char startingTown, char finishingTown, int maxDistance)
@@ -108,71 +99,17 @@ namespace Trains.Entities
             return numberOfRoutes;
         }
 
-
-        private int MinDistance(List<Node> vertices, Dictionary<char, int> distance)
-        {
-            var min = int.MaxValue;
-            var minIndex = 0;
-
-            for (int i = 0; i < vertices.Count(); i++)
-            {
-                if (distance[vertices[i].Name] < min && !vertices[i].Visited)
-                {
-                    min = distance[vertices[i].Name];
-                    minIndex = i;
-                }
-            }
-
-            return minIndex;
-        }
-
         public int FindShortestDistanceBetween(char start, char finish)
         {
-            var results = Dijkstra(start, finish);
+            if (!NodeMap.ContainsKey(start) || !NodeMap.ContainsKey(finish))
+                return -1;
 
+            var startNode = NodeMap[start];
+            var finishNode = NodeMap[finish];
+
+            var results = DijkstraAlgorithm.Dijkstra(this, startNode, finishNode);
             return results[finish];
-        }
-
-        private Dictionary<char, int> Dijkstra(char start, char finish)
-        {
-            var q = new List<Node>();
-
-            Dictionary<char, int> distance = new Dictionary<char, int>();
-            //Dictionary<Node, Node> previousNode = new Dictionary<Node, Node>();
-
-            for (var i = 0; i < Nodes.Count; i++)
-            {
-                var initialDistance = Nodes[i].Name == start ? 0 : int.MaxValue;
-                distance[Nodes[i].Name] = initialDistance;
-                //previousNode[Nodes[i]] = null;
-                q.Add(Nodes[i]);
-            }
-
-            while (q.Count(n => !n.Visited) > 0)
-            {
-
-                var minDistanceIndex = MinDistance(q, distance);
-                var u = q[minDistanceIndex];
-
-                if (u.Name == finish && u.Visited)
-                    return distance;
-
-                u.Visited = true;
-
-                foreach (var node in u.OutgoingEdges)
-                {
-                    int currDistance = distance[u.Name] + node.Distance;
-
-                    if (currDistance > 0 && (currDistance < distance[node.Destination.Name] || distance[node.Destination.Name] == 0))
-                    {
-                        distance[node.Destination.Name] = currDistance;
-                        //previousNode[node.Destination] = u;
-                    }
-                }
-            }
-
-            return distance;
-        }
+        }     
 
         private Node AddNewNodeToGraphAndMap(char town)
         {
@@ -221,18 +158,6 @@ namespace Trains.Entities
             }
 
             return numberOfRoutes;
-        }
-    }
-
-    public class Vertex
-    {
-        public int Distance { get; set; }
-        public Vertex PreviousNode { get; set; }
-
-        public Vertex(int distance, Vertex previousNode)
-        {
-            Distance = distance;
-            PreviousNode = previousNode;
         }
     }
 }

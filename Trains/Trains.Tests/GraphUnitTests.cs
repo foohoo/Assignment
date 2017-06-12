@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Trains.Entities;
-using Trains.Services;
 
 namespace Trains.Tests
 {
@@ -170,9 +165,10 @@ namespace Trains.Tests
         [TestCase('A', 'A', 0)]
         [TestCase('D', 'A', int.MaxValue)]
         [TestCase('A', 'B', 5)]
+        [TestCase('E', 'A', int.MaxValue)]
         public void Should_Return_Shortest_Distance_Between_Start_And_Finish_Nodes(char start, char finish, int expectedDistance)
         {
-            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+            var inputGraphText = "AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7, FE12";
 
             var graph = new Graph(inputGraphText);
 

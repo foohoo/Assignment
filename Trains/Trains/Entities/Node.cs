@@ -7,8 +7,6 @@ namespace Trains.Entities
         public char Name { get; }
         public List<Edge> OutgoingEdges { get; set; }
 
-        public bool Visited { get; set; }
-
         public Node(char name)
         {
             OutgoingEdges = new List<Edge>();

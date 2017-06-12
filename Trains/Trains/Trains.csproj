@@ -43,7 +43,8 @@
     <Compile Include="Entities\Edge.cs" />
     <Compile Include="Entities\Graph.cs" />
     <Compile Include="Entities\Node.cs" />
-    <Compile Include="Interfaces\IGraphService.cs" />
+    <Compile Include="Entities\Vertex.cs" />
+    <Compile Include="Helpers\DijkstraAlgorithm.cs" />
     <Compile Include="Services\GraphService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

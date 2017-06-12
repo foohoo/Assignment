@@ -35,11 +35,11 @@ namespace Trains.Tests
         }
 
         [Test]
-        public void Should_Not_Throw_Exception_If_Input_Text_File_Found_At_Path()
+        public void Should_Throw_Exception_If_Input_Text_File_Found_At_Path_But_Contains_Bad_Data()
         {
-            var filePath = AppDomain.CurrentDomain.BaseDirectory + "\\TestInput.txt";
+            var filePath = AppDomain.CurrentDomain.BaseDirectory + "\\TestInputBad.txt";
 
-            Assert.DoesNotThrow(() => Program.Main(new[] { filePath }));
+            Assert.Throws<ArgumentException>(() => Program.Main(new[] { filePath }));
         }
 
     }
