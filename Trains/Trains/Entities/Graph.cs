@@ -136,12 +136,14 @@ namespace Trains.Entities
         {
             var q = new List<Node>();
 
-           var distance = new Dictionary<char, int>();
+            Dictionary<char, int> distance = new Dictionary<char, int>();
+            //Dictionary<Node, Node> previousNode = new Dictionary<Node, Node>();
 
             for (var i = 0; i < Nodes.Count; i++)
             {
                 var initialDistance = Nodes[i].Name == start ? 0 : int.MaxValue;
                 distance[Nodes[i].Name] = initialDistance;
+                //previousNode[Nodes[i]] = null;
                 q.Add(Nodes[i]);
             }
 
@@ -159,7 +161,9 @@ namespace Trains.Entities
 
                         if (currDistance < distance[node.Destination.Name])
                         {
-                            distance[node.Destination.Name] = currDistance;                        }
+                            distance[node.Destination.Name] = currDistance;
+                            //previousNode[node.Destination] = u;
+                        }
                     }
                 }
             }
