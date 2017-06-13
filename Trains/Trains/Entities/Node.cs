@@ -4,7 +4,7 @@ namespace Trains.Entities
 {
     public class Node
     {
-        public char Name { get; }
+        public char Name { get; private set; }
         public List<Edge> OutgoingEdges { get; set; }
 
         public Node(char name)

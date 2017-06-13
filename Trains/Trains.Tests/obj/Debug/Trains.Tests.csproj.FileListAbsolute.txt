@@ -19,3 +19,4 @@ C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Tr
 C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Trains.Tests.dll
 C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\obj\Debug\Trains.Tests.pdb
 C:\Users\Baron\Documents\Development\Assignment\Trains\Trains.Tests\bin\Debug\TestInputBad.txt
+C:\Users\barnesd\Documents\Dev\Assignment\Trains\Trains.Tests\bin\Debug\TestInputBad.txt

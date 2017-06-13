@@ -2,8 +2,8 @@ namespace Trains.Entities
 {
     public class Edge
     {
-        public Node Destination { get; }
-        public int Distance { get; }
+        public Node Destination { get; private set; }
+        public int Distance { get; private set; }
 
         public Edge(Node destination, int distance)
         {
