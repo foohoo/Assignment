@@ -1,0 +1,81 @@
+Dexter Barnes
+
+Assignment instructions for problem one: Trains
+========================================================
+
+Assignment implemented in c# via Visual Studio and Nunit for testing
+
+Design and assumptions:
+-----------------------
+
+<Design>
+For this problem I decided to implement an labelled directed graph, this would allow me
+to use a Dijkstra's algorithm for the "shortest distance" problems but also allowed
+for easy traversal for the other problems as well using recursion.
+
+To implement the graph I created a "Graph" object which holds a list
+of "Node" objects to represent the "towns" and each "Node" object contains
+a list of "Edges" which represent the routes to other towns. Each "Edge" object
+contains the distance as the weight.
+
+The Dijkstra's algorithm was separated into it's own static class and uses an object
+called "vertex" to iterate through the graph, the vertex keeps track of the visited
+towns.
+
+The application itself is a simple console application. The application takes one
+argument from the command line: the path to the input text file which contains the
+graph data. If the data is parsed correctly then you can then enter commands to carry
+out the different methods, or run the test input.
+
+To make sure there output could be formatted I implemented a service to sit between
+the main program and the graph.
+
+I completed this assignment using Test Driven Development therefore a test project
+is included in the solution, it uses the Nunit framework.
+
+<Assumptions>
+The application assumes the input graph data to follow the example input of comma plus space
+separated nodes (", ") which include a character for the first node, a character for the second
+node and then the remainder being the distance integer.
+e.g. AB1 will create node 'A', node 'B' and a distance of 1 going from node 'A' to node 'B'
+
+It also assumes that for the graph itself, that a given route will not appear more than once
+and for a given route, the starting and ending town will not be the same.
+
+
+
+Instructions
+-----------------------
+
+<Building the solution>
+This application was developed in Visual Studio, this will probably be the easiest way
+to build the solution (including the test project) but included at the root directory are
+two files that can be renamed to the .bat extension (after being reviewed). These files will
+attempt to build the project without the need for Visual Studio - this can be a little
+problematic as it requires MsBuild to run so if the target machine does not have this
+installed they will fail (also there are different versions of MsBuild which may cause issues).
+For the test project, it requires the NuGet package manager to restore the Nunit package,
+again, this relies on the target machine having NuGet but also there's not guarantee that it's
+in the path variable or in the same path on the machine so for this the project will
+need to be built in Visual Studio.
+
+<Main application>
+The application once built should be run through the command line. One argument needs
+to be supplied: the path to the input text file on disk.
+
+example:
+      Trains.exe C:\Users\Test\Desktop\inputgraph.txt
+
+If the input file is loaded correctly and the input successfully creates a graph
+then the nodes will be output the screen and the application will wait for a command.
+
+List of commands:
+
+'exit' to exit the application
+'tests' to run the test data
+
+'route' - this will find the distance of a given route e.g. 'route A-B-C'
+'trips-maxstops' - this will find the number of journeys with a maxmium number of stops e.g. 'trips-maxstops C-C-3'
+'trips-exactstops' - this will find the number of journeys with an exact number of stops e.g. 'trips-exactstops C-C-3'
+'shortest' - this will find the shortest distance between two stops e.g. 'shortest C-C'
+'route-maxdistance' - this will find the number of routes between two stops below a maximum distance e.g. 'route-maxdistance C-C-30'
